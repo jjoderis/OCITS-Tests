@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# the signal has to be a valid syscall
+# see: https://docs.docker.com/engine/reference/builder/#stopsignal
+STOPSIGNAL SOMETHING_INVALID
+
+CMD ["echo", "Hello World!"]

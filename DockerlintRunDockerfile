@@ -1,0 +1,17 @@
+FROM node:16-alpine3.11
+
+RUN npm install -g dockerlint
+RUN apk --no-cache add bash
+
+SHELL ["/bin/bash", "-c"]
+CMD test ! -d /lint-output/dockerlint && mkdir /lint-output/dockerlint ; \
+    for f in /lint-input/*/*/* ; \
+    do \
+        SUBDIR_FILE=${f/\/lint-input\/} ; \
+        SUBDIRECTORIES=$(cut -d'/' -f 1-2 <<< "$SUBDIR_FILE") ; \
+        SUBDIRECTORY=$(cut -d'/' -f 1 <<< "$SUBDIRECTORIES") ; \
+        FILENAME=$(cut -d'/' -f 3 <<< "$SUBDIR_FILE") ; \
+        test ! -d /lint-output/dockerlint/$SUBDIRECTORY && mkdir /lint-output/dockerlint/$SUBDIRECTORY ; \
+        test ! -d /lint-output/dockerlint/$SUBDIRECTORIES && mkdir /lint-output/dockerlint/$SUBDIRECTORIES ; \
+        dockerlint "$f" &> /lint-output/dockerlint/$SUBDIRECTORIES/$FILENAME ; \
+    done

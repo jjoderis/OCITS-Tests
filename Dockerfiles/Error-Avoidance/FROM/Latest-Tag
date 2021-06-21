@@ -1,0 +1,5 @@
+# using latest tag might lead to problems if the base image gets an update with breaking changes
+# additionally using a specific version you know works should be preferred over getting some version
+FROM alpine:latest
+
+CMD ["echo", "Hello World!"]

@@ -1,0 +1,10 @@
+FROM alpine:3.13.5
+
+# valid ways to define and access ENV Variables
+# see: https://docs.docker.com/engine/reference/builder/#env
+# and: https://docs.docker.com/engine/reference/builder/#environment-replacement
+ARG TEST="some value" TEST2=some\ other\ value
+
+RUN echo "${TEST} ${TEST2:-default} ${TEST:+if set} \${TEST3}"
+
+CMD ["echo", "Hello World!"]

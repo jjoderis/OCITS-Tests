@@ -1,0 +1,5 @@
+# We should prefer images from known repositories or disable the rule if we know the used repository is valid
+
+FROM unknown.host.com/someimage:1.1.0
+
+CMD ["echo", "Hello World!"]

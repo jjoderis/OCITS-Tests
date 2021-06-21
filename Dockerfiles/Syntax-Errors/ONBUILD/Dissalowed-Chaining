@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# ONBUILD is not allowed to call ONBUILD
+# see: https://docs.docker.com/engine/reference/builder/#onbuild
+ONBUILD ONBUILD RUN ["echo", "Hello from base image!"]
+
+CMD ["echo", "Hello World!"]

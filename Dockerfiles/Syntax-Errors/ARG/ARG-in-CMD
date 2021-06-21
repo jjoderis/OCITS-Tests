@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+ARG TEST="Can't be accesses in execution stage"
+
+# ARGs are only usable in the build stage they are defined in, they don't carry over into the running container or other stages
+# see https://docs.docker.com/engine/reference/builder/#scope
+CMD ["/bin/ash", "-c", "echo TEST: ${TEST}"]

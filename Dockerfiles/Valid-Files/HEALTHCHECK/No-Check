@@ -1,0 +1,17 @@
+FROM node:16-alpine3.11
+
+RUN apk --no-cache add \
+    curl=7.7.0
+
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+
+RUN npm install
+
+EXPOSE 8080
+
+# one can set HEALTCHCHECK to none to override HEALTHCHECKS defined in the base image
+# see: https://docs.docker.com/engine/reference/builder/#healthcheck
+HEALTHCHECK NONE
+
+CMD ["node", "index.js"]

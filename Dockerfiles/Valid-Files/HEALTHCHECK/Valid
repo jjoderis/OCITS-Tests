@@ -1,0 +1,17 @@
+FROM node:16-alpine3.11
+
+RUN apk --no-cache add \
+    curl=7.7.0
+
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+
+RUN npm install
+
+EXPOSE 8080
+
+# one can use healthcheck to see if the application running inside the container is working as expected
+# see: https://docs.docker.com/engine/reference/builder/#healthcheck
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost:8080 || exit 1
+
+CMD ["node", "index.js"]

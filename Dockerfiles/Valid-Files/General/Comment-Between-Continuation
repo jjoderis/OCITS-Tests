@@ -1,0 +1,8 @@
+FROM alpine:3.13.5
+
+RUN apk --no-cache add \
+    # specify specific version for curl
+    # comments like this are allowed, see: https://docs.docker.com/engine/reference/builder/#format
+    curl=7.7.0
+
+CMD ["echo", "Hello World!"]

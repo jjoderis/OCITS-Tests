@@ -1,0 +1,8 @@
+FROM alpine:3.13.5
+
+# you can use EXPOSE to signal the need to publish ports to someone creating a container from the images
+# you can optionally specify which protocol the port should be opened for
+# see: https://docs.docker.com/engine/reference/builder/#expose
+EXPOSE 80 8080 9000
+
+CMD ["echo", "Hello World!"]

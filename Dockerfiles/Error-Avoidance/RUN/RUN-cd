@@ -1,0 +1,8 @@
+FROM alpine:3.13.5
+
+# avoid RUN cd ... && ... commands, use WORKDIR instead
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#workdir
+COPY . /usr/src/app
+RUN cd /usr/src/app && ls
+
+CMD ["pwd"]

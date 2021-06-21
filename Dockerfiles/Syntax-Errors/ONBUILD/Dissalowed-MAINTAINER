@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# not allowed to call maintainer from ONBUILD
+# see: https://docs.docker.com/engine/reference/builder/#onbuild
+ONBUILD MAINTAINER "ME"
+
+CMD ["echo", "Hello World!"]

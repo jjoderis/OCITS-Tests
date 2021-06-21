@@ -1,0 +1,13 @@
+FROM alpine:3.13.5
+
+WORKDIR /tmp/
+
+# if you have two files used in different steps it might be preferable to copy them seperatly to avoid unnecessary cache invalidation
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+# if the "static.txt" file we copy here is never changed but copied with the frequently changed "dynamic.txt" file the following command will be invalidated every time the other file changed
+COPY static.txt dynamic.txt ./
+RUN cat test1.txt
+
+RUN cat test2.txt
+
+CMD ["echo", "Hello World!"]

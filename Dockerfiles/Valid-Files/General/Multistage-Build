@@ -1,0 +1,18 @@
+# docker allows and encourages use of multi stage builds to reduce image size
+# see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#use-multi-stage-builds
+FROM gcc:11.1.0 as build
+
+WORKDIR /usr/src
+
+#creating a simple hello world program in c++
+RUN printf "#include <iostream> \n int main() { std::cout << \"Hello World!\" << std::endl; }"  > main.cpp ; \
+    g++ --static -o hello main.cpp
+
+# we create a minimal image and copy only the executable to run into it
+FROM scratch
+
+WORKDIR /usr/app
+COPY --from=build /usr/src/hello .
+
+CMD ["./hello"]
+

@@ -1,0 +1,6 @@
+# The ARG command defined before FROM should be used in one of the FROM commands in the file
+# see https://docs.docker.com/engine/reference/builder/#format
+ARG BASE_IMAGE_VERSION=3.13.5
+FROM alpine:3.13.5
+
+CMD ["echo", "Hello World!"]

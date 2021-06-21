@@ -1,0 +1,9 @@
+FROM alpine:3.13.5
+
+# values that contain spaces must either have all spaces escaped or be put into quotation marks
+# see: https://docs.docker.com/engine/reference/builder/#env
+ARG TEST=some value
+
+RUN echo "${TEST}"
+
+CMD ["echo", "Hello World!"]

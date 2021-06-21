@@ -1,0 +1,9 @@
+FROM ubuntu:18.04
+
+# using specific versions for dependencies to install (version pinning) might prevent problems with incompatible versions
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["echo", "Hello World!"]

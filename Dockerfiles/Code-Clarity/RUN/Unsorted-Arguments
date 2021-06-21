@@ -1,0 +1,10 @@
+FROM alpine:3.13.5
+
+# if possible multi line arguments should be sorted alphanumerically
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#sort-multi-line-arguments
+RUN apk --no-cache add \
+    nodejs=14.16.1-r1 \
+    curl=7.77.0-r0 ; \
+    printf "console.log('Hello Node!');" > test.js
+
+CMD ["node", "test.js"]

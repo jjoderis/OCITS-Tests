@@ -1,0 +1,3 @@
+# every image needs a FROM command
+
+CMD ["echo", "Hello World!"]

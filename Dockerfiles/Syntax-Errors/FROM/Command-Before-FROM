@@ -1,0 +1,5 @@
+# only an ARG command that is used in FROM may be used before FROM
+RUN ["echo", "This is not allowed"]
+FROM alpine:3.13.5
+
+CMD ["echo", "Hello World!"]

@@ -1,0 +1,8 @@
+FROM alpine:3.13.5
+
+# using pipes with the default shell can lead to unexpected results since the RUN will only fail when the last command in the pipe fails
+# this can be aleviated with the pipefail option
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
+RUN wget -O - https://some.site | wc -l > /number
+
+CMD ["echo", "Hello World!"]

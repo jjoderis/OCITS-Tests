@@ -1,0 +1,9 @@
+FROM ubuntu:18.04
+
+# its often times better to use multiple package manager commands in one line instead of many
+# it is prefered to also get specific versions for packages that are installed
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
+RUN apt-get update
+RUN apt-get install -y curl
+
+CMD ["echo", "Hello World!"]

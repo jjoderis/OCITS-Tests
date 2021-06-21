@@ -1,0 +1,8 @@
+FROM alpine:3.13.5
+
+# you can use RUN to execute programs or run shell scripts
+# see: https://docs.docker.com/engine/reference/builder/#run
+# the following is the exec form which does not automatically run a command shell
+RUN ["echo", "Hello Build!, \ needs to be escaped"]
+
+CMD ["echo", "Hello World!"]

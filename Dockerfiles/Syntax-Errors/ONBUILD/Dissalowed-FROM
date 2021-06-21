@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# not allowed to call FROM from ONBUILD
+# see: https://docs.docker.com/engine/reference/builder/#onbuild
+ONBUILD FROM scratch
+
+CMD ["echo", "Hello World!"]

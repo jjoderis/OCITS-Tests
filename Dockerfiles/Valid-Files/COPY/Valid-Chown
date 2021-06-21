@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# you can set ownership of the copied data using the optional chown flag
+# see: https://docs.docker.com/engine/reference/builder/#copy
+COPY --chown=10:11 *.txt /usr/src/app/
+
+CMD ["echo", "Hello World!"]

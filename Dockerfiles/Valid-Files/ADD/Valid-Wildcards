@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# wildcards are allowed for ADDs sources
+# see: https://docs.docker.com/engine/reference/builder/#add
+ADD *.tar.xz /usr/src/app/
+
+CMD ["echo", "Hello World!"]

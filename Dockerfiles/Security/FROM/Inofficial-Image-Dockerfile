@@ -1,0 +1,5 @@
+# We should prefer official images if possible or disable the rule if not possible
+
+FROM someone/someimage:1.1.0
+
+CMD ["echo", "Hello World!"]

@@ -1,0 +1,10 @@
+FROM alpine:3.13.5
+
+# acces to non-existant Variable, doesn't fail on build
+# first: regular access (most likely not wanted)
+# second: access with default if it doesn't exist (could be expected)
+# third: use value if exists and empty string if not (could be expected)
+# see https://docs.docker.com/engine/reference/builder/#environment-replacement
+RUN echo "${TEST3}" && echo "${TEST3:+word}" && echo "${TEST3:-word}"
+
+CMD ["echo", "Hello World!"]

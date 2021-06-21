@@ -1,0 +1,5 @@
+# using a specific version you know works should be preferred over getting some version
+# will default to latest which is also better not to be used
+FROM alpine
+
+CMD ["echo", "Hello World!"]

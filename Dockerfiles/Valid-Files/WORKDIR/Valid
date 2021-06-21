@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# WORKDIR should be used with absolute path to prevent changes to previous WORKDIR commands from breaking it
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#workdir
+WORKDIR /usr/src/app
+
+CMD ["echo", "Hello World!"]

@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# dockers context only contains the provided directory and its subdirectories, moving to the parent directory is not allowed
+# see: https://docs.docker.com/engine/reference/builder/#copy
+COPY ../test.txt /
+
+CMD ["echo", "Hello World!"]

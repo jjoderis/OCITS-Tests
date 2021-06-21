@@ -1,0 +1,8 @@
+FROM alpine:3.13.5
+
+# the ARG is only usable after it was defined in the file even if the user might have given a value on build
+# see https://docs.docker.com/engine/reference/builder/#scope
+RUN echo "${TEST}"
+ARG TEST="some value"
+
+CMD ["echo", "Hello World!"]

@@ -1,0 +1,10 @@
+# commands should be uppercase
+# see: https://docs.docker.com/engine/reference/builder/#format
+
+from alpine:3.13.5
+
+arg TEST="some value"
+
+run echo "${TEST}"
+
+cmd ["echo", "Hello World!"]

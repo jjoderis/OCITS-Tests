@@ -1,0 +1,10 @@
+FROM alpine:3.13.5
+
+# an ARG will be overridden by a ENV Variable with the same name
+# see https://docs.docker.com/engine/reference/builder/#using-arg-variables
+ENV TEST="other value"
+ARG TEST="some value"
+
+RUN echo "${TEST}"
+
+CMD ["echo", "Hello World!"]

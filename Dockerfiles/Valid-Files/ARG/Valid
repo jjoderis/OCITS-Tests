@@ -1,0 +1,29 @@
+# ARG is the only command allowed before FROM and only if it is used in FROM
+# see https://docs.docker.com/engine/reference/builder/#from
+ARG BASE_IMAGE_VERSION=3.13.5
+FROM alpine:${BASE_IMAGE_VERSION}
+
+# to reuse an ARG that was created outside of the build we have to redefine it inside the build
+# see https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG BASE_IMAGE_VERSION
+
+RUN echo "Alpine Version: ${BASE_IMAGE_VERSION}"
+
+# ARGs can be defined with and without a default value
+# see https://docs.docker.com/engine/reference/builder/#default-values
+# values with spaces need to either have every space escaped or have to be put in quotes
+# see https://docs.docker.com/engine/reference/builder/#env (not specifically said for ARG but building the container without will lead to TEST2=other)
+ARG TEST1="some value"
+ARG TEST2=other\ value
+ARG TEST3
+
+# ARGs can be used in RUN instructions with either $var-name or ${var-name}
+# see https://docs.docker.com/engine/reference/builder/#environment-replacement
+# Using ARG or ENV in RUN is only possible if RUN uses a shell, see: https://docs.docker.com/engine/reference/builder/#run
+RUN echo "TEST1: ${TEST1}, TEST2: $TEST2"
+# ARGs can be used with defaults if they are not defined or to control if a value is used
+RUN echo "${TEST3:-default}, ${TEST1:+use if set}"
+
+# ARGs are only usable in the build stage they are defined in, they don't carry over into the running container or other stages
+# see https://docs.docker.com/engine/reference/builder/#scope
+CMD ["echo", "Hello World!"]

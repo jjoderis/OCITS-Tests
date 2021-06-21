@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# when there are multiple sources the dest has to be a directory and end with /
+# see: https://docs.docker.com/engine/reference/builder/#copy
+COPY test1.txt test2.txt /usr/src/a
+
+CMD ["echo", "Hello World!"]

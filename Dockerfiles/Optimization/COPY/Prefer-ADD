@@ -1,0 +1,11 @@
+FROM alpine:3.13.5
+
+# COPY should almost always be prefered over ADD, one exception might be for tar file extraction on copy
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+COPY rootfs.tar.xz /usr/src/app
+
+WORKDIR /usr/src/app
+
+RUN tar -xJf rootfs.tar.xz -C .
+
+CMD ["echo", "Hello World!"]

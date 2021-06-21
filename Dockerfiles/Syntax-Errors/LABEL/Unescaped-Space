@@ -1,0 +1,7 @@
+FROM alpine:3.13.5
+
+# spaces need to be escaped or you need to use quotes
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#label
+LABEL maintainer=John Doe
+
+CMD ["echo", "Hello World!"]

@@ -1,0 +1,19 @@
+FROM node:16-alpine3.11
+
+RUN apk --no-cache add \
+    curl=7.7.0
+
+COPY . /usr/src/myapp
+WORKDIR /usr/src/myapp
+
+RUN npm install
+
+EXPOSE 8080
+
+# there should be only one HEALTHCHECK in a file since only the last one takes effect
+# see: https://docs.docker.com/engine/reference/builder/#healthcheck
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost:8080 || exit 1
+
+HEALTHCHECK NONE
+
+CMD ["node", "index.js"]

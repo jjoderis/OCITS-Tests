@@ -1,0 +1,8 @@
+ARG BASE_IMAGE_VERSION=3.13.5
+FROM alpine:${BASE_IMAGE_VERSION}
+
+# the ARG is outside the build scope and thus not usable here
+# see https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+RUN echo "${BASE_IMAGE_VERSION}"
+
+CMD ["echo", "Hello World!"]

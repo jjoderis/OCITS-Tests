@@ -1,0 +1,11 @@
+FROM alpine:3.13.5
+
+# Syntax without = between name and value is discouraged
+# see https://docs.docker.com/engine/reference/builder/#env
+ENV TEST value1
+# this doesn't assign 2 environment variables but one Variable TEST2 with value: value2 TEST3 value3
+ENV TEST2 value2 TEST3 value3
+
+RUN echo "${TEST} ${TEST2} ${TEST3}"
+
+CMD ["echo", "Hello World!"]

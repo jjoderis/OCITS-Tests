@@ -1,0 +1,8 @@
+ARG BASE_IMAGE_VERSION=3.13.5
+FROM alpine:${BASE_IMAGE_VERSION}
+
+# there should be only one CMD in a Dockerfile, all before the last one will be ignored
+# see: https://docs.docker.com/engine/reference/builder/#cmd
+
+CMD ["echo", "Hello World!"]
+CMD ["echo", "Hello World again!"]
