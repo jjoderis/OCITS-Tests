@@ -1,0 +1,5 @@
+FROM alpine:3.13.5
+
+USER root
+
+CMD ["echo", "Hello World!"]

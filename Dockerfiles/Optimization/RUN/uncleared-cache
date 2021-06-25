@@ -1,8 +1,8 @@
 FROM ubuntu:18.04
 
-# its often times better to use multiple package manager commands in one line instead of many
-# it is prefered to also get specific versions for packages that are installed
+# it is adviced to delete the apt cache to decrease image size
 # see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    curl=7.58.*
 
 CMD ["echo", "Hello World!"]

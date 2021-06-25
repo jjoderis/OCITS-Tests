@@ -1,0 +1,8 @@
+FROM alpine:3.13.5
+
+# COPY and ADD in ONBUILD can cause problems when the copied resource does not exist in the context of the next image
+# might be ok if the image has a pretty clear purpose that necessitates the expected files to be there
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#onbuild
+ONBUILD ADD some_file /usr/src/app
+
+CMD ["echo", "Hello World!"]

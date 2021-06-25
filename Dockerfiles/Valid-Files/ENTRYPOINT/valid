@@ -1,0 +1,5 @@
+ARG BASE_IMAGE_VERSION=3.13.5
+FROM alpine:${BASE_IMAGE_VERSION}
+
+ENTRYPOINT ["echo", "Hello World again!"]
+CMD ["echo", "Hello World!"]

@@ -1,0 +1,9 @@
+FROM ubuntu:18.04
+
+# using sudo can lead to unpredictable behaviour
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
+RUN sudo apt-get update && apt-get install --no-install-recommends -y \
+    curl=7.58.* \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["echo", "Hello World!"]

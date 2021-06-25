@@ -1,0 +1,11 @@
+# Parser directives have to be the first line in the file to work
+# The following parser directive will not be used because of this
+# see: https://docs.docker.com/engine/reference/builder/#parser-directives
+# escape=`
+
+FROM alpine:3.13.5
+
+RUN echo `
+    "Hello Build!"
+
+CMD ["echo", "Hello World!"]
