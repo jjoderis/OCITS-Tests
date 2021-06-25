@@ -1,8 +1,0 @@
-FROM alpine:3.13.5
-
-# you can use EXPOSE to signal the need to publish ports to someone creating a container from the images
-# if you want to open the same port for both tcp and udp use two lines
-# see: https://docs.docker.com/engine/reference/builder/#expose
-EXPOSE 80/tcp 80/udp
-
-CMD ["echo", "Hello World!"]

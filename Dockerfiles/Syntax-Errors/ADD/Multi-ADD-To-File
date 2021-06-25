@@ -2,6 +2,6 @@ FROM alpine:3.13.5
 
 # when there are multiple sources the dest has to be a directory and end with /
 # see: https://docs.docker.com/engine/reference/builder/#copy
-ADD test1.tar.xz test2.tar.xz /usr/src/a
+ADD test.tar.xz test2.tar.xz /usr/src/a
 
 CMD ["echo", "Hello World!"]
