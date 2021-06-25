@@ -1,0 +1,43 @@
+---
+  profile:
+    name: "Hadolint Extension"
+    description: "Rules that complement hadolint in that they find problems hadolint doesn't find"
+  line_rules:
+    LABEL:
+       paramSyntaxRegex: /.+/
+       rules: []
+    FROM: 
+      paramSyntaxRegex: /^[\w./\-:]+(:[${}\w.]+)?(-[${}\w.]+)?( as \w+)?$/i
+      rules: []
+    MAINTAINER: 
+      paramSyntaxRegex: /.+/
+      rules: []
+    RUN: 
+      paramSyntaxRegex: /.+/
+      rules: []
+    EXPOSE: 
+      paramSyntaxRegex: /^[\d-\s\w/\\]+$/
+      rules: []
+    ENV: 
+      paramSyntaxRegex: /^[\w-$/\\=\"[\]{}@:,'`\t. ]+$/
+      rules: []
+    ADD: 
+      paramSyntaxRegex: /^~?([\w-.~:/?#\[\]\\\/*@!$&'()*+,;=.{}"]+[\s]*)+$/
+    COPY: 
+      paramSyntaxRegex: /.+/
+      rules: []
+    ENTRYPOINT:
+      paramSyntaxRegex: /.+/
+      rules: []
+    VOLUME:
+      paramSyntaxRegex: /.+/
+      rules: []
+    USER: 
+      paramSyntaxRegex: /^[a-z0-9_][a-z0-9_-]{0,40}$/
+      rules: []
+    WORKDIR: 
+      paramSyntaxRegex: /^~?[\w\d-\/.{}$\/:]+[\s]*$/
+      rules: []
+    ONBUILD: 
+      paramSyntaxRegex: /.+/
+      rules: []
