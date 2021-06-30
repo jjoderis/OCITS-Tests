@@ -1,0 +1,6 @@
+FROM alpine:3.13.5
+
+# there is no do command
+DO ["echo", "This is not allowed"]
+
+CMD ["echo", "Hello World!"]

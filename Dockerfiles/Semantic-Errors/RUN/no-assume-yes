@@ -1,0 +1,8 @@
+FROM ubuntu:18.04
+
+# not using -y could lead to problems if there are prompts that ask if required packages should be installed
+RUN apt-get update && apt-get install --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["echo", "Hello World!"]
