@@ -1,2 +1,3 @@
-/lint-output
+!/lint-output/.gitkeep
+/lint-output/**
 .vscode
