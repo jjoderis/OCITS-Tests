@@ -1,17 +1,19 @@
 FROM node:16-alpine3.11
 
-RUN npm install -g dockerlint
-RUN apk --no-cache add bash
+RUN npm install -g dockerlint@0.3.9 \
+    && apk --no-cache add bash
+
+ENV OUTPUT_DIRECTORY="dockerlint"
 
 SHELL ["/bin/bash", "-c"]
-CMD test ! -d /lint-output/dockerlint && mkdir /lint-output/dockerlint ; \
+CMD test ! -d /lint-output/$OUTPUT_DIRECTORY && mkdir /lint-output/$OUTPUT_DIRECTORY ; \
     for f in /lint-input/*/*/* ; \
     do \
         SUBDIR_FILE=${f/\/lint-input\/} ; \
         SUBDIRECTORIES=$(cut -d'/' -f 1-2 <<< "$SUBDIR_FILE") ; \
         SUBDIRECTORY=$(cut -d'/' -f 1 <<< "$SUBDIRECTORIES") ; \
         FILENAME=$(cut -d'/' -f 3 <<< "$SUBDIR_FILE") ; \
-        test ! -d /lint-output/dockerlint/$SUBDIRECTORY && mkdir /lint-output/dockerlint/$SUBDIRECTORY ; \
-        test ! -d /lint-output/dockerlint/$SUBDIRECTORIES && mkdir /lint-output/dockerlint/$SUBDIRECTORIES ; \
-        dockerlint "$f" &> /lint-output/dockerlint/$SUBDIRECTORIES/$FILENAME ; \
+        test ! -d /lint-output/$OUTPUT_DIRECTORY/$SUBDIRECTORY && mkdir /lint-output/$OUTPUT_DIRECTORY/$SUBDIRECTORY ; \
+        test ! -d /lint-output/$OUTPUT_DIRECTORY/$SUBDIRECTORIES && mkdir /lint-output/$OUTPUT_DIRECTORY/$SUBDIRECTORIES ; \
+        dockerlint "$f" &> /lint-output/$OUTPUT_DIRECTORY/$SUBDIRECTORIES/$FILENAME ; \
     done
