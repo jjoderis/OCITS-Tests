@@ -1,0 +1,23 @@
+FROM hadolint/hadolint:v2.4.1-alpine
+
+COPY hadolint-config.yaml /config/
+
+RUN apk --no-cache add bash npm \
+    && npm install -g dockerfile_lint
+
+COPY dockerfile_lint_rules.yaml /config/
+
+SHELL ["/bin/bash", "-c"]
+CMD test ! -d /lint-output/combined_lint && mkdir /lint-output/combined_lint ; \
+    for f in /lint-input/*/*/* ; \
+    do \
+        SUBDIR_FILE=${f/\/lint-input\/} ; \
+        SUBDIRECTORIES=$(cut -d'/' -f 1-2 <<< "$SUBDIR_FILE") ; \
+        SUBDIRECTORY=$(cut -d'/' -f 1 <<< "$SUBDIRECTORIES") ; \
+        FILENAME=$(cut -d'/' -f 3 <<< "$SUBDIR_FILE") ; \
+        test ! -d /lint-output/combined_lint/$SUBDIRECTORY && mkdir /lint-output/combined_lint/$SUBDIRECTORY ; \
+        test ! -d /lint-output/combined_lint/$SUBDIRECTORIES && mkdir /lint-output/combined_lint/$SUBDIRECTORIES ; \
+        hadolint --config /config/hadolint-config.yaml "$f" > /lint-output/combined_lint/$SUBDIRECTORIES/$FILENAME ; \
+        echo -e "\n\n\n-----------------\n\n\n" >> /lint-output/combined_lint/$SUBDIRECTORIES/$FILENAME ; \
+        dockerfile_lint -f "$f" -r /config/dockerfile_lint_rules.yaml >> /lint-output/combined_lint/$SUBDIRECTORIES/$FILENAME ; \
+    done
