@@ -1,3 +1,4 @@
 # every image needs a FROM command
+# see: https://docs.docker.com/engine/reference/builder/#from
 
 CMD ["echo", "Hello World!"]

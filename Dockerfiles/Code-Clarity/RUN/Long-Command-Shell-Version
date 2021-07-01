@@ -1,10 +1,8 @@
 FROM alpine:3.13.5
 
 ARG TEST="some value"
-# you can use RUN to execute programs or run shell scripts
-# see: https://docs.docker.com/engine/reference/builder/#run
-# the following is the shell form which runs the command in the default shell of the image
-# the shell can do variable substitution
+
+# to improve readability long lines should be broken into multiple lines using the line continuation character
 RUN echo "It might be advisable to use multiple lines for very long commands" && echo "The command might become hard to read in most text editors otherwise"
 
 CMD ["echo", "Hello World!"]

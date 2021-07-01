@@ -1,4 +1,4 @@
-# We should prefer official images if possible or disable the rule if not possible
+# We should prefer official images if possible or disable the rule if we know the source of the image can be trusted
 
 FROM someone/someimage:1.1.0
 

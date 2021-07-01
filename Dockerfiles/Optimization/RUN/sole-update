@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 # its often times better to use multiple package manager commands in one line instead of many
-# it is prefered to also get specific versions for packages that are installed
+# using update in a separate line has other unexpected behaviour
 # see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends curl=7.58.*

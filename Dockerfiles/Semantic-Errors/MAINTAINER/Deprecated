@@ -1,5 +1,7 @@
 FROM alpine:3.13.5
 
+# you should use label instead of maintainer since it is deprecated
+# see: https://docs.docker.com/engine/reference/builder/#maintainer-deprecated
 MAINTAINER "John Doe"
 
 CMD ["echo", "Hello World!"]

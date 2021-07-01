@@ -1,4 +1,5 @@
 # only an ARG command that is used in FROM may be used before FROM
+# see: https://docs.docker.com/engine/reference/builder/#from
 RUN ["echo", "This is not allowed"]
 FROM alpine:3.13.5
 

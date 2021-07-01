@@ -4,7 +4,7 @@ ENV TEST="some value"
 
 RUN echo "${TEST}"
 
-# since the previous layers can't be overwritten the previous value of ENV still accessible afterwards
+# since the previous layers can't be overwritten the previous value of ENV is still accessible afterwards
 # see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#env
 RUN unset TEST
 

@@ -1,5 +1,8 @@
 FROM alpine:3.13.5
 
+# this is an example to show that hadolint warns against specifically setting root as the last USER
+# it is generally advisable to set the user to one with as little as possible privileges
+# see: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 USER root
 
 CMD ["echo", "Hello World!"]

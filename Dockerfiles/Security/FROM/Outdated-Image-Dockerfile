@@ -1,3 +1,4 @@
+# base images should be kept up to date
 FROM gcc:6.2.0
 
 CMD ["echo", "Hello World!"]

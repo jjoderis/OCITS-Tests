@@ -1,4 +1,6 @@
 # escape=`
+# it is convention to include a blank line after a parser directive
+# see: https://docs.docker.com/engine/reference/builder/#parser-directives
 FROM alpine:3.13.5
 
 RUN echo `
