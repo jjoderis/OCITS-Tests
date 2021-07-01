@@ -1,308 +1,275 @@
 ---
-  profile:
-    name: "Hadolint Extension"
-    description: "Rules that complement hadolint in that they find problems hadolint doesn't find"
-  line_rules:
-    LABEL:
-       paramSyntaxRegex: /.+/
-       rules: 
-        -
-          label: "lowercase_instruction"
-          regex: /^LABEL/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-    FROM: 
-      paramSyntaxRegex: /^[\w./\-:]+(:[${}\w.]+)?(-[${}\w.]+)?( as \w+)?$/i
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^FROM/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "unofficial_image"
-          regex: /\//
-          level: "warn"
-          message: "You are using an unofficial image"
-          description: "Unofficial images might pose a security risk. If you know you can trust the image author deactivate this rule by writing 'dockerfile_lint - ignore' above the FROM line."
-    MAINTAINER: 
-      paramSyntaxRegex: /.+/
-      rules: 
-        -
-          label: "lowercase_instruction"
-          regex: /^MAINTAINER/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-    RUN: 
-      paramSyntaxRegex: /.+/
-      rules: 
-        -
-          label: "lowercase_instruction"
-          regex: /^RUN/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "wrong_exec_form_syntax"
-          regex: /^RUN ((\[("[^"]*",(\s|\\\n)*)*"[^"]*"\])|([^\[]))/
-          level: "error"
-          inverse_rule: true
-          message: "You seem to be using the wrong syntax for the exec form"
-          description: "The exec form of this instruction should be of a JSON form similar to this [\"executable\",\"param2\", ...]"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#run
-        -
-          label: "unescaped_backslash_in_exec"
-          regex: /^RUN ((\[("(([^"\\])|(\\\\))*",(\s|\\\n)*)*"(([^"\\])|(\\\\))*"\])|([^\[]))/
-          level: "error"
-          inverse_rule: true
-          message: "You seem to have missed to escape a backslash inside an exec form argument"
-          description: "Failing to escape a backslash inside an argument will lead to an error on execution!"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#run
-        -
-          label: "possible_invalid_var_expansion"
-          regex: /^RUN \[.*[^\\]\$.*\]/
-          level: "info"
-          message: "You might be trying to use a variable in the exex form"
-          description: "Using variable substitution in the exec form will only work if you explicitly invoke a shell"
-          reference_url: https://docs.docker.com/engine/reference/builder/#run
-        -
-          label: "invalid_env_unset"
-          regex: /^RUN unset/
-          level: "warn"
-          message: "Removing a previously defined environment variable in this way will most likely not work in the expected way"
-          description: "Unset will only delete the environment variable in this layer. It is still accessible afterwards"
-          reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#env
-    EXPOSE: 
-      paramSyntaxRegex: /^[\d-\s\w/\\]+$/
-      rules: 
-        -
-          label: "lowercase_instruction"
-          regex: /^EXPOSE/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-    ENV: 
-      paramSyntaxRegex: /^[\w-$/\\=\"[\]{}@:,'`\t. ]+$/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^ENV/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "discouraged_syntax"
-          regex: /^ENV [^\s=]*\s.*/
-          level: "warn"
-          message: "You are setting your ENV variable in a way that is discouraged"
-          description: "Use the ENV [name]=[value] syntax instead"
-          reference_url: https://docs.docker.com/engine/reference/builder/#env
-    ADD: 
-      paramSyntaxRegex: /^~?([\w-.~:/?#\[\]\\\/*@!$&'()*+,;=.{}"]+[\s]*)+$/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^ADD/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "multi_add_to_file"
-          regex: /^ADD (--from=\S* )?(([^-\s]\S*)+ ){2,}\S*[^/]$/
-          level: "error"
-          message: "You are adding multiple files to a single file path"
-          description: "You have to end the destination path with a slash when giving multiple src paths!"
-          reference_url: https://docs.docker.com/engine/reference/builder/#add
-        -
-          label: "possible_out_of_scope_access"
-          regex: /^ADD ((.*(\.\.).*) )+\S*$/
-          level: "warn"
-          message: "You seem to be using a src path containing a .. construct"
-          description: "Trying to access a path above the root of the build context (e.g. ADD ../etc.txt ...) will result in an error!"
-          reference_url: https://docs.docker.com/engine/reference/builder/#add
-        -
-          label: "inefficient_web_fetch"
-          regex: /(https?:\/\/\S+)|(([^.\s]+\.)+[^.\s]+\/)/
-          # regex source: https://stackoverflow.com/a/39944457
-          level: "info"
-          message: "Fetching content from the web with ADD is discouraged"
-          description: "It is adviced to fetch web data with curl or wget to be able to handle the fetched data in the same command to avoid adding another layer"
-          reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
-    COPY: 
-      paramSyntaxRegex: /.+/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^COPY/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "multi_copy_to_file"
-          regex: /^COPY (--from=\S* )?(([^-\s]\S*)+ ){2,}\S*[^/]$/
-          level: "error"
-          message: "You are copying multiple files to a single file path"
-          description: "You have to end the destination path with a slash when giving multiple src paths!"
-          reference_url: https://docs.docker.com/engine/reference/builder/#copy
-        -
-          label: "possible_out_of_scope_access"
-          regex: /^COPY ((.*(\.\.).*) )+\S*$/
-          level: "warn"
-          message: "You seem to be using a src path containing a .. construct"
-          description: "Trying to access a path above the root of the build context (e.g. COPY ../etc.txt ...) will result in an error!"
-          reference_url: https://docs.docker.com/engine/reference/builder/#copy
-    ENTRYPOINT:
-      paramSyntaxRegex: /.+/
-      rules: 
-        -
-          label: "lowercase_instruction"
-          regex: /^ENTRYPOINT/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "wrong_exec_form_syntax"
-          regex: /^ENTRYPOINT ((\[("[^"]*",(\s|\\\n)*)*"[^"]*"\])|([^\[]))/
-          level: "error"
-          inverse_rule: true
-          message: "You seem to be using the wrong syntax for the exec form"
-          description: "The exec form of this instruction should be of a JSON form similar to this [\"executable\",\"param2\", ...]"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#entrypoint
-        -
-          label: "possible_invalid_var_expansion"
-          regex: /^ENTRYPOINT \[.*[^\\]\$.*\]/
-          level: "info"
-          message: "You might be trying to use a variable in the exex form"
-          description: "Using variable substitution in the exec form will only work if you explicitly invoke a shell"
-          reference_url: https://docs.docker.com/engine/reference/builder/#exec-form-entrypoint-example
-    CMD:
-      paramSyntaxRegex: /.+/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^CMD/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "wrong_exec_form_syntax"
-          regex: /^CMD ((\[("[^"]*",(\s|\\\n)*)*"[^"]*"\])|([^\[]))/
-          level: "error"
-          inverse_rule: true
-          message: "You seem to be using the wrong syntax for the exec form"
-          description: "The exec form of this instruction should be of a JSON form similar to this [\"executable\",\"param2\", ...]"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#cmd
-        -
-          label: "possible_undefined_arg"
-          regex: /.*[^\\]\$.*/
-          level: "info"
-          message: "You might be trying to use an ARG in this line"
-          description: "ARGs go out of scope after the build and don't persist into the execution stage. If you are using an environment variable deactivate this check with 'dockerfile_lint - ignore'"
-          reference_url: https://docs.docker.com/engine/reference/builder/#scope
-        -
-          label: "possible_invalid_var_expansion"
-          regex: /^CMD \[.*[^\\]\$.*\]/
-          level: "info"
-          message: "You might be trying to use a variable in the exex form"
-          description: "Using variable substitution in the exec form will only work if you explicitly invoke a shell"
-          reference_url: https://docs.docker.com/engine/reference/builder/#cmd
-    VOLUME:
-      paramSyntaxRegex: /.+/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^VOLUME/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-    USER: 
-      paramSyntaxRegex: /^[a-z0-9_][a-z0-9_-]{0,40}$/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^USER/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-    WORKDIR: 
-      paramSyntaxRegex: /^~?[\w\d-\/.{}$\/:]+[\s]*$/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^WORKDIR/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-    ONBUILD: 
-      paramSyntaxRegex: /.+/
-      rules:
-        -
-          label: "lowercase_instruction"
-          regex: /^ONBUILD/
-          inverse_rule: true
-          level: "warn"
-          message: "You didn't write the instruction name in complete uppercase"
-          description: "It is convention to give instruction names in complete uppercase"
-          reference_url: 
-            - https://docs.docker.com/engine/reference/builder/#format
-        -
-          label: "bad_onbuild_command"
-          regex: /^ONBUILD (ADD|COPY)/
-          level: "warn"
-          message: "Using ADD or COPY in ONBUILD can be problematic"
-          description: "Use ADD or COPY only if you can be sure that the build context of the derived image will have the data to add/copy"
-          reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#onbuild
-  required_instructions:
-    -
-      instruction: "USER"
-      count: 1
-      level: "warn"
-      message: "You should switch to a non root USER if your application can run without privileges"
-      reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
-
+profile:
+  name: "Hadolint Extension"
+  description: "Rules that complement hadolint in that they find problems hadolint doesn't find"
+line_rules:
+  LABEL:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^LABEL/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+  FROM:
+    paramSyntaxRegex: /^[\w./\-:]+(:[${}\w.]+)?(-[${}\w.]+)?( as \w+)?$/i
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^FROM/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "unofficial_image"
+        regex: /\//
+        level: "warn"
+        message: "You are using an unofficial image"
+        description: "Unofficial images might pose a security risk. If you know you can trust the image author deactivate this rule by writing 'dockerfile_lint - ignore' above the FROM line."
+  MAINTAINER:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^MAINTAINER/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+  RUN:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^RUN/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "wrong_exec_form_syntax"
+        regex: /^RUN ((\[("[^"]*",(\s|\\\n)*)*"[^"]*"\])|([^\[]))/
+        level: "error"
+        inverse_rule: true
+        message: "You seem to be using the wrong syntax for the exec form"
+        description: 'The exec form of this instruction should be of a JSON form similar to this ["executable","param2", ...]'
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#run
+      - label: "unescaped_backslash_in_exec"
+        regex: /^RUN ((\[("(([^"\\])|(\\\\))*",(\s|\\\n)*)*"(([^"\\])|(\\\\))*"\])|([^\[]))/
+        level: "error"
+        inverse_rule: true
+        message: "You seem to have missed to escape a backslash inside an exec form argument"
+        description: "Failing to escape a backslash inside an argument will lead to an error on execution!"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#run
+      - label: "possible_invalid_var_expansion"
+        regex: /^RUN \[.*[^\\]\$.*\]/
+        level: "info"
+        message: "You might be trying to use a variable in the exex form"
+        description: "Using variable substitution in the exec form will only work if you explicitly invoke a shell"
+        reference_url: https://docs.docker.com/engine/reference/builder/#run
+      - label: "invalid_env_unset"
+        regex: /^RUN unset/
+        level: "warn"
+        message: "Removing a previously defined environment variable in this way will most likely not work in the expected way"
+        description: "Unset will only delete the environment variable in this layer. It is still accessible afterwards"
+        reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#env
+  EXPOSE:
+    paramSyntaxRegex: /^[\d-\s\w/\\]+$/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^EXPOSE/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+  ENV:
+    paramSyntaxRegex: /^[\w-$/\\=\"[\]{}@:,'`\t. ]+$/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^ENV/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "discouraged_syntax"
+        regex: /^ENV [^\s=]*\s.*/
+        level: "warn"
+        message: "You are setting your ENV variable in a way that is discouraged"
+        description: "Use the ENV [name]=[value] syntax instead"
+        reference_url: https://docs.docker.com/engine/reference/builder/#env
+  ADD:
+    paramSyntaxRegex: /^~?([\w-.~:/?#\[\]\\\/*@!$&'()*+,;=.{}"]+[\s]*)+$/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^ADD/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "multi_add_to_file"
+        regex: /^ADD (--from=\S* )?(\S(?!-from=)\S* ){2,}\S*[^/]$/
+        level: "error"
+        message: "You are adding multiple files to a single file path"
+        description: "You have to end the destination path with a slash when giving multiple src paths!"
+        reference_url: https://docs.docker.com/engine/reference/builder/#add
+      - label: "possible_out_of_scope_access"
+        regex: /^ADD ((.*(\.\.).*) )+\S*$/
+        level: "warn"
+        message: "You seem to be using a src path containing a .. construct"
+        description: "Trying to access a path above the root of the build context (e.g. ADD ../etc.txt ...) will result in an error!"
+        reference_url: https://docs.docker.com/engine/reference/builder/#add
+      - label: "inefficient_web_fetch"
+        regex: /(https?:\/\/\S+)|(([^.\s]+\.)+[^.\s]+\/)/
+        # regex source: https://stackoverflow.com/a/39944457
+        level: "info"
+        message: "Fetching content from the web with ADD is discouraged"
+        description: "It is adviced to fetch web data with curl or wget to be able to handle the fetched data in the same command to avoid adding another layer"
+        reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
+  COPY:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^COPY/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "multi_copy_to_file"
+        regex: /^COPY (--from=\S* )?(\S(?!-from=)\S* ){2,}\S*[^/]$/
+        level: "error"
+        message: "You are copying multiple files to a single file path"
+        description: "You have to end the destination path with a slash when giving multiple src paths!"
+        reference_url: https://docs.docker.com/engine/reference/builder/#copy
+      - label: "possible_out_of_scope_access"
+        regex: /^COPY ((.*(\.\.).*) )+\S*$/
+        level: "warn"
+        message: "You seem to be using a src path containing a .. construct"
+        description: "Trying to access a path above the root of the build context (e.g. COPY ../etc.txt ...) will result in an error!"
+        reference_url: https://docs.docker.com/engine/reference/builder/#copy
+  ENTRYPOINT:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^ENTRYPOINT/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "wrong_exec_form_syntax"
+        regex: /^ENTRYPOINT ((\[("[^"]*",(\s|\\\n)*)*"[^"]*"\])|([^\[]))/
+        level: "error"
+        inverse_rule: true
+        message: "You seem to be using the wrong syntax for the exec form"
+        description: 'The exec form of this instruction should be of a JSON form similar to this ["executable","param2", ...]'
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#entrypoint
+      - label: "possible_invalid_var_expansion"
+        regex: /^ENTRYPOINT \[.*[^\\]\$.*\]/
+        level: "info"
+        message: "You might be trying to use a variable in the exex form"
+        description: "Using variable substitution in the exec form will only work if you explicitly invoke a shell"
+        reference_url: https://docs.docker.com/engine/reference/builder/#exec-form-entrypoint-example
+  CMD:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^CMD/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "wrong_exec_form_syntax"
+        regex: /^CMD ((\[("[^"]*",(\s|\\\n)*)*"[^"]*"\])|([^\[]))/
+        level: "error"
+        inverse_rule: true
+        message: "You seem to be using the wrong syntax for the exec form"
+        description: 'The exec form of this instruction should be of a JSON form similar to this ["executable","param2", ...]'
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#cmd
+      - label: "possible_undefined_arg"
+        regex: /.*[^\\]\$.*/
+        level: "info"
+        message: "You might be trying to use an ARG in this line"
+        description: "ARGs go out of scope after the build and don't persist into the execution stage. If you are using an environment variable deactivate this check with 'dockerfile_lint - ignore'"
+        reference_url: https://docs.docker.com/engine/reference/builder/#scope
+      - label: "possible_invalid_var_expansion"
+        regex: /^CMD \[.*[^\\]\$.*\]/
+        level: "info"
+        message: "You might be trying to use a variable in the exex form"
+        description: "Using variable substitution in the exec form will only work if you explicitly invoke a shell"
+        reference_url: https://docs.docker.com/engine/reference/builder/#cmd
+  VOLUME:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^VOLUME/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+  USER:
+    paramSyntaxRegex: /^[a-z0-9_][a-z0-9_-]{0,40}$/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^USER/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+  WORKDIR:
+    paramSyntaxRegex: /^~?[\w\d-\/.{}$\/:]+[\s]*$/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^WORKDIR/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+  ONBUILD:
+    paramSyntaxRegex: /.+/
+    rules:
+      - label: "lowercase_instruction"
+        regex: /^ONBUILD/
+        inverse_rule: true
+        level: "warn"
+        message: "You didn't write the instruction name in complete uppercase"
+        description: "It is convention to give instruction names in complete uppercase"
+        reference_url:
+          - https://docs.docker.com/engine/reference/builder/#format
+      - label: "bad_onbuild_command"
+        regex: /^ONBUILD (ADD|COPY)/
+        level: "warn"
+        message: "Using ADD or COPY in ONBUILD can be problematic"
+        description: "Use ADD or COPY only if you can be sure that the build context of the derived image will have the data to add/copy"
+        reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#onbuild
+required_instructions:
+  - instruction: "USER"
+    count: 1
+    level: "warn"
+    message: "You should switch to a non root USER if your application can run without privileges"
+    reference_url: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
